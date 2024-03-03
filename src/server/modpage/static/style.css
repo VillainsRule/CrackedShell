@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
+* {
+    font-family: 'Source Code Pro';
+    color: white;
+}
+
+body {
+    background: #1f1f1f;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.header {
+    margin-top: 40px;
+    text-align: center;
+    max-width: 85%;
+    margin-left: 7.5%;
+}
+
+.title {
+    font-weight: 800;
+    font-size: 6vh;
+}
+
+.description {
+    margin-top: 5px;
+    font-size: 4vh;
+}
+
+.divider {
+    margin-top: 20px;
+    border: 1px solid white;
+    width: 70%;
+    margin-left: 15%;
+    height: 0;
+}
+
+.content {
+    display: flex;
+    height: calc(100% - 250px);
+    width: 80vw;
+    margin-left: 10vw;
+    margin-top: 30px;
+}
+
+.container {
+    width: 100%;
+}
+
+.left {
+    border-right: 1px solid white;
+    margin-right: 20px;
+    padding-right: 20px;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.left::-webkit-scrollbar {
+    display: none;
+}
+
+.smallheader {
+    font-size: 25px;
+}
+
+.script {
+    margin-top: 15px;
+    height: 35px;
+    background: #161616;
+    border: 0px;
+    box-shadow: 0 0 5px #000000;
+    margin-left: 10px;
+    outline: none;
+    padding: 0 10px;
+    width: calc(100% - 30px);
+}
+
+.plus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 30px;
+    height: 35px;
+    width: 35px;
+    background: #161616;
+    box-shadow: 0 0 5px #000000;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.launchRow {
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+}
+
+.launch {
+    max-width: calc(100% - 20px);
+    width: 100px;
+    padding: 10px;
+    text-align: center;
+    background: #161616;
+    box-shadow: 0 0 5px #000000;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logs {
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
+    overflow: auto;
+    background: #161616;
+    border: 3px solid #131313;
+    border-radius: 5px;
+    cursor: text;
+    padding: 10px;
+}
