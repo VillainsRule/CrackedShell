@@ -39,14 +39,8 @@ export default async (req, res) => {
                 cache.set(s, sc);
             } else sc = cache.get(s); // use cache
 
-            let crackedmeta = sc.split('// {{CRACKEDSHELL}}')[1].split('// {{!CRACKEDSHELL}}')[0]; // find meta for required scripts
-
-            if (!crackedmeta) return injection += `
-                ;(() => {
-                    \${extraInjects}
-                    \${sc}
-                })();
-            `; // if no meta
+            let crackedmeta = sc.split('// {{CRACKEDSHELL}}')?.[1]?.split('// {{!CRACKEDSHELL}}')?.[0]; // find meta for required scripts
+            if (!crackedmeta) return injection += `;(() => {${extraInjects};${sc}})();`; // if no meta
 
             let preInject = '';
             let requires = crackedmeta.split('\n').filter(s => s.startsWith('// require:')).map(s => s.match(/"(.*?)"/)); // parse required scripts
@@ -59,15 +53,9 @@ export default async (req, res) => {
                 preInject += `(() => {${script}})();`; // add to code
             }));
 
-            injection += `
-                ;(() => {
-                    ${extraInjects}
-                    ${preInject}
-                    ${sc}
-                })();
-            `; // add all the code to a <script> element
+            injection += `;(() => {${extraInjects};${preInject};${sc}})();`; // add all the code to a <script> element
 
-            return;
+            return; // finish promise
         }));
 
         let page = await axios.get(`https://math.international/`);
