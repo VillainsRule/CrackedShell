@@ -1,5 +1,6 @@
 import express from 'express';
 import url from 'url';
+import config from '#config';
 
 import proxy from '#modpage/proxy';
 import download from '#modpage/download';
