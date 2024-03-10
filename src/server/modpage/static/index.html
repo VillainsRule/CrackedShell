@@ -1,45 +1,56 @@
 <!DOCTYPE html>
 <html lang='en'>
 
-<head>
-    <meta name='language' content='English'>
-    <meta name='google' content='notranslate'>
+    <head>
+        <meta name='language' content='English'>
+        <meta name='google' content='notranslate'>
 
-    <meta name='charset' content='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <meta name='charset' content='utf-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
 
-    <link rel='stylesheet' href='./style.css'>
+        <link rel='stylesheet' href='./style.css'>
 
-    <title>CrackedShell</title>
-</head>
+        <link rel='stylesheet' href='https://kit-pro.fontawesome.com/releases/v6.5.1/css/pro.min.css'>
 
-<body>
-    <div class='header'>
-        <div class='title'>CrackedShell</div>
-        <div class='description'>a modern method of injecting mods into shell shockers.</div>
-    </div>
+        <title>CrackedShell</title>
+    </head>
 
-    <div class='divider'></div>
+    <body>
+        <div class='header'>
+            <div class='title'>CrackedShell</div>
+            <div class='links'>
+                <a class='link' href='https://github.com/VillainsRule/CrackedShell'><i class="fa-brands fa-github"></i>
+                    github</a>
+                <a class='link' href='https://dsc.gg/sfnetwork'><i class="fa-brands fa-discord"></i> discord</a>
+            </div>
+        </div>
 
-    <div class='content'>
-        <div class='container left'>
-            <div class='smallheader'>scripts</div>
-            <div class='scriptlist'></div>
-            <div class='plus' id='addScript'>+</div>
+        <div class='divider'></div>
+
+        <div class='content'>
+            <div class='columns'>
+                <div class='column scripts'>
+                    <div class='button columnhead'>scripts</div>
+                </div>
+
+                <div class='column styles'>
+                    <div class='button columnhead'>styles</div>
+                </div>
+            </div>
 
             <div class='launchRow'>
                 <div class='launch'>launch 🚀</div>
             </div>
         </div>
 
-        <div class='container'>
-            <div class='logs'>
-                <div>Waiting for launch...</div>
+        <div template='linkrow'>
+            <div class='linkrow'>
+                <input type='text' class='linkinput' placeholder='enter a {{type}} URL...'></input>
+                <div class='linkremove' id='{{id}}'>-</div>
             </div>
         </div>
-    </div>
 
-    <script src='./script.js'></script>
-</body>
+        <script src='./script.js'></script>
+    </body>
 
 </html>

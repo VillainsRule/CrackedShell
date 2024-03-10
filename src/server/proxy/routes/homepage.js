@@ -4,64 +4,72 @@ import config from '#config';
 
 export default async (req, res) => {
     try {
-        let params = new URLSearchParams(req.url.replace('/', '')); // get the _cracked parameter
-        if (params.size === 0) return res.redirect('/mod'); // redirect to config page if not found
+        let params = new URLSearchParams(req.url.replace('/', ''));
+        if (params.size === 0) return res.redirect('/mod');
 
-        let injection = `
-            ['transitions', 'forms', 'style', 'game'].forEach(async (stylesheet) => {
-                let st = await fetch(\`/styles/\${stylesheet}.css\`);
-                st = await st.text();
-                document.head.appendChild(document.createElement('style')).innerHTML = st;
-            });
-        `; // manual style injection, see readme for more info
+        let scriptTag = ``;
+        let styleTags = ``;
 
         let extraInjects = `
             let unsafeWindow = window;
-            let GM_getValue = (...a) => localStorage.getItem(...a);
-            let GM_setValue = (...a) => unsafeWindow.localStorage.setItem(...a);
             let GM_deleteValue = (...a) => localStorage.removeItem(...a);
             let GM_listValues = () => localStorage;
             let GM_setClipboard = (text, _, callback) => navigator.clipboard.writeText(text).then(() => callback());
 
+            let GM_setValue = (name, value) => {
+                if (typeof value === 'object') localStorage.setItem(name, JSON.stringify(value));
+                else localStorage.setItem(name, value);
+            };
+
+            let GM_getValue = (name) => {
+                try {
+                    return JSON.parse(localStorage.getItem(name));
+                } catch {
+                    localStorage.getItem(name);
+                };
+            };
+
             let isCrackedShell = true;
-        `; // functions to replace tampermonkey & other utils, see readme
+        `;
 
-        let cracked = JSON.parse(atob(params.get('_cracked'))); // get parsed cracked data
+        let cracked = JSON.parse(atob(params.get('cs')));
 
-        await Promise.all(cracked.scripts.map(async (s) => { // loop through all injecting scripts
-            if (!config.cache.allowed.some(r => s.startsWith(r))) return; // ignore if not cache allowed
-            // ^^ no handler because there's an error in modpage/download.js
+        await Promise.all(cracked.map(async (url) => {
+            if (!config.cache.allowed.some(r => url.startsWith(r)) && !config.cache.allowed.includes('*')) return;
 
-            let sc;
+            if (url.endsWith('.js')) {
+                let raw;
 
-            if (!cache.has(s)) { // freshly get
-                sc = (await axios.get(s)).data;
-                cache.set(s, sc);
-            } else sc = cache.get(s); // use cache
+                if (!cache.has(url)) {
+                    raw = (await axios.get(url)).data;
+                    cache.set(url, raw);
+                } else raw = cache.get(url);
 
-            let crackedmeta = sc.split('// {{CRACKEDSHELL}}')?.[1]?.split('// {{!CRACKEDSHELL}}')?.[0]; // find meta for required scripts
-            if (!crackedmeta) return injection += `;(() => {${extraInjects};${sc}})();`; // if no meta
+                let crackedmeta = raw.split('// {{CRACKEDSHELL}}')?.[1]?.split('// {{!CRACKEDSHELL}}')?.[0];
+                if (!crackedmeta) return scriptTag += `;(() => {${extraInjects};${raw}})();`;
 
-            let preInject = '';
-            let requires = crackedmeta.split('\n').filter(s => s.startsWith('// require:')).map(s => s.match(/"(.*?)"/)); // parse required scripts
+                let preInject = '';
+                let requires = crackedmeta.split('\n').filter(s => s.startsWith('// require:')).map(s => s.match(/"(.*?)"/));
 
-            await Promise.all(requires.map(async (r) => { // loop through all required, fetch, add to code
-                if (!config.cache.allowed.some(c => r[1].startsWith(c))) return resolve(); // cache allowed checker
-                
-                let script = await fetch(r[1]); // fetch
-                script = await script.text();
-                preInject += `(() => {${script}})();`; // add to code
-            }));
+                await Promise.all(requires.map(async (r) => {
+                    if (!config.cache.allowed.some(c => r[1].startsWith(c)) && !config.cache.allowed.includes('*')) return resolve();
 
-            injection += `;(() => {${extraInjects};${preInject};${sc}})();`; // add all the code to a <script> element
+                    let script = await fetch(r[1]);
+                    script = await script.text();
+                    preInject += `(() => {${script}})();`;
+                }));
 
-            return; // finish promise
+                scriptTag += `;(() => {${extraInjects};${preInject};${raw}})();`;
+            } else styleTags += `<link rel="stylesheet" href="/mod/proxy/${encodeURIComponent(url)}" />`;
+
+            return;
         }));
 
         let page = await axios.get(`https://math.international/`);
 
-        page.data = page.data.replace(`</script>`, `</script><script>${injection}</script>`); // make the <script> element & add code
+        page.data = page.data.replace(`</script>`, `</script><script>${scriptTag}</script>${styleTags}`);
 
+        res.header('Content-Type', page.headers['content-type']);
         res.send(page.data);
     } catch (e) {
         console.error(e, '/');

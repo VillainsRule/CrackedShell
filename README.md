@@ -18,10 +18,11 @@ Here's how to set up your own copy:<br>
 <br>
 1. Install Node.JS, NPM, & git.
 2. Clone the repository from git: `git clone https://github.com/VillainsRule/CrackedShell && cd CrackedShell`
-3. Install dependencies: `npm i`
-4. Configure the game in `config.js`
-5. Run the server: `npm run start`
-6. Visit the game at `localhost:6900`!
+3. If it is not already on your machine, add PNPM: `npm i -g pnpm`
+4. Install dependencies: `pnpm i`
+5. Configure the game in `config.js` (see the Configuration section for more information)
+6. Run the server: `pnpm dev`
+7. Visit the game at `localhost:6900`!
 <br>
 
 **If you want a public instance, try this:**
@@ -30,6 +31,23 @@ Here's how to set up your own copy:<br>
 3. Ngrok should input a URL you can visit on any device.
 
 **WARNING: THIS URL CONTAINS YOUR IP ADDRESS.** Be careful who you give this to.
+
+
+<br>
+<h2 align="center">Configuration</h2>
+
+Local CrackedShell instances can be configued in `config.js`. Here's what's going on in there:
+
+### port
+This tells the server what port to run on.<br>
+If you're a developer and are using port `6900` for something else, change this. If not, ignore it.
+
+### cache.allowed
+This specifies allowed script origins in the cache.<br>
+This prevents your server/computer from being IP logged from malicious scripts put in the `/mod` page.<br>
+If you don't care about your privacy, you can add the `*` script to disable this entirely.<br>
+
+**Note: the default scripts are ALL trusted raw script sources that will not attack your computer.**
 
 <br>
 <h2 align="center">Developer Information</h2>
@@ -48,36 +66,23 @@ CrackedShell supports a few GM values & defines them no matter what:
 If you need a GM value that isn't defined here, add a workaround or open a [pull request](https://github.com/VillainsRule/CrackedShell/pulls)!<br>
 These values are not exposed to the `window`, so don't worry about being detected!
 
-### Manual CSS injection
-I have literally NO clue why, but the CSS does not work when the native `<link>` item is added - so it's manually injected with this code:
-```js
-['transitions', 'forms', 'style', 'game'].forEach(async (stylesheet) => {
-    let st = await fetch(`/styles/${stylesheet}.css`);
-    st = await st.text();
-    document.head.appendChild(document.createElement('style')).innerHTML = st;
-});
-```
-
 ### shellshock.js Server Modification
 In order to fix WebSocket issues, `shellshock.js` is modified on the server. Here's the list of patches:
 ```js
-['||location.host,', '||\'math.international\','], // replace /matchmaker/ socket
-['${location.hostname}', 'math.international'], // replace /services/ socket
-['dynamicContentRoot+', `"math.international"+`], // replace /services/ socket
-['window.location.hostname', '"math.international"'], // replace /game/ socket
+['||location.host,', '||\'risenegg.com\','], // replace /matchmaker/ socket
+['${location.hostname}', 'risenegg.com'], // replace /services/ socket
+['dynamicContentRoot+', `"risenegg.com"+`], // replace /services/ socket
+['window.location.hostname', '"risenegg.com"'], // replace /game/ socket
 ['isHttps()', 'true'] // fix socket http issues
 ```
 
 **This would prioritize anything done with injected scripts.**<br>
-Modifying ANY of these patches or rewriting them will break CrackedShell, so please find a workaround :)
+If you want an original copy of the Shell Shockers JS script before it's modified, you can fetch `/js/shellshock.og.js`.<br>
+Do NOT use this to replace script injection. It will cause WebSocket errors - the modified code is shown above.
 
-### CrackedShell Detection
-Speaking of workarounds, there is a variable named `isCrackedShell`.<br>
-This is also only defined in the scope of your script, so detection is impossible!
-
-### Injection Time
-ALL scripts are injected in the equivalent of Tampermonkey's `document-start`.<br>
-In order to make this work, we use...
+### isCrackedShell
+You can detect CrackedShell clients with a `isCrackedShell` boolean on the scope of your script.<br>
+Like the GM modifications, this is undetectable.
 
 ### Caching
 The cache is a way we store large masses of code.<br>

@@ -1,18 +1,16 @@
 import express from 'express';
 import url from 'url';
-import cache from '#cache';
 
+import proxy from '#modpage/proxy';
 import download from '#modpage/download';
 
 export default async (app) => {
-    await download(app); // use download.js
+    await proxy(app);
+    await download(app);
 
-    await app.get('/mod/get/', async (req, res) => { // get cached script
-        if (cache.has(req.query.url)) res.send(cache.get(req.query.url));
-        else res.send('alert(`Script not found.`);');
-    });
+    await app.get('/mod/data', async (req, res) => res.send({
+        canCache: config.cache.allowed
+    }));
 
-    await app.use('/mod', express.static(url.fileURLToPath(new URL('.', import.meta.url)) + './static')); // serve the static files
-
-    return;
+    await app.use('/mod', express.static(url.fileURLToPath(new URL('.', import.meta.url)) + './static'));
 };
