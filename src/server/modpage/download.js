@@ -13,7 +13,7 @@ export default async (app) => await app.post('/mod/download/', async (req, res) 
 
     if (!isURL) return res.send({
         success: false,
-        error: `Url "${shorten(req.body.url)}" is not a valid URL.`
+        error: `Invalid URL.`
     });
 
     if (config.cache.allowed.some(s => req.body.url.startsWith(s)) || config.cache.allowed.includes('*')) {
@@ -22,18 +22,16 @@ export default async (app) => await app.post('/mod/download/', async (req, res) 
             cache.set(req.body.url, resp.data);
 
             res.send({
-                success: true,
-                message: `Cached a script...`,
-                url: req.body.url
+                success: true
             });
         } catch {
             res.send({
                 success: false,
-                error: `Error [404]: Cannot find script.`
+                error: `Script not found.`
             });
         };
     } else res.send({
         success: false,
-        error: `One of your scripts is not one we accept. Check the project Github for more information.`
+        error: `Invalid origin.`
     });
 });
