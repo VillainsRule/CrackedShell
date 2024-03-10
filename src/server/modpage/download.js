@@ -22,7 +22,8 @@ export default async (app) => await app.post('/mod/download/', async (req, res) 
             cache.set(req.body.url, resp.data);
 
             res.send({
-                success: true
+                success: true,
+                url: req.body.url
             });
         } catch {
             res.send({

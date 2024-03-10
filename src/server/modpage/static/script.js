@@ -65,7 +65,7 @@ register();
 document.querySelector('.launch').onclick = async () => {
     const crackedData = [];
 
-    let promises = await Promise.all([...document.querySelectorAll('.linkinput')].filter(s => s).map(async (scriptElement) => {
+    let promises = await Promise.all([...document.querySelectorAll('.linkinput')].filter(s => s.value).map(async (scriptElement) => {
         let resp = await fetch('/mod/download', {
             method: 'POST',
             body: JSON.stringify({
