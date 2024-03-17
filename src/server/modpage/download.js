@@ -16,7 +16,7 @@ export default async (app) => await app.post('/mod/download/', async (req, res) 
         error: `Invalid URL.`
     });
 
-    if (config.cache.allowed.some(s => req.body.url.startsWith(s)) || config.cache.allowed.includes('*')) {
+    if (config.cacheable.some(s => req.body.url.startsWith(s)) || config.cacheable.includes('*')) {
         try {
             let resp = await axios.get(req.body.url);
             cache.set(req.body.url, resp.data);

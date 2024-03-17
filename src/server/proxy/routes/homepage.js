@@ -35,7 +35,7 @@ export default async (req, res) => {
         let cracked = JSON.parse(atob(params.get('cs')));
 
         await Promise.all(cracked.map(async (url) => {
-            if (!config.cache.allowed.some(r => url.startsWith(r)) && !config.cache.allowed.includes('*')) return;
+            if (!config.cacheable.some(r => url.startsWith(r)) && !config.cacheable.includes('*')) return;
 
             if (url.endsWith('.js')) {
                 let raw;
@@ -52,7 +52,7 @@ export default async (req, res) => {
                 let requires = crackedmeta.split('\n').filter(s => s.startsWith('// require:')).map(s => s.match(/"(.*?)"/));
 
                 await Promise.all(requires.map(async (r) => {
-                    if (!config.cache.allowed.some(c => r[1].startsWith(c)) && !config.cache.allowed.includes('*')) return resolve();
+                    if (!config.cacheable.some(c => r[1].startsWith(c)) && !config.cacheable.includes('*')) return resolve();
 
                     let script = await fetch(r[1]);
                     script = await script.text();

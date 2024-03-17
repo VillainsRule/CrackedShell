@@ -88,6 +88,5 @@ document.querySelector('.launch').onclick = async () => {
     let resp = await fetch('/mod/data');
     resp = await resp.json();
 
-    allowedScripts = resp.canCache;
-    console.log(allowedScripts);
+    allowedScripts = resp.cacheable;
 })();

@@ -42,12 +42,23 @@ Local CrackedShell instances can be configued in `config.js`. Here's what's goin
 This tells the server what port to run on.<br>
 If you're a developer and are using port `6900` for something else, change this. If not, ignore it.
 
-### cache.allowed
+### cacheable
 This specifies allowed script origins in the cache.<br>
 This prevents your server/computer from being IP logged from malicious scripts put in the `/mod` page.<br>
 If you don't care about your privacy, you can add the `*` script to disable this entirely.<br>
 
 **Note: the default scripts are ALL trusted raw script sources that will not attack your computer.**
+
+### server
+This allows you to customize the Shell Shockers server host.
+
+#### url
+This specifies the URL of the server. You're best off using an official Shell Shockers instance such as `shellshock.io`.<br>
+If hosting locally, use `localhost:port`.
+
+#### secure
+This specifies whether or not the server is secure (`wss://` or `ws://`).<br>
+For official servers, set this to `true`. For locally hosted servers, set it to `false`.
 
 <br>
 <h2 align="center">Developer Information</h2>
