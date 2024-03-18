@@ -26,6 +26,10 @@ export default async (req, res) => {
                 find: 'isHttps()',
                 replace: !!config.server.secure ? 'true' : 'false',
                 all: true
+            },
+            {
+                find: `}.\${`,
+                replace: `}${config.server.custom ? '' : '.'}\${`
             }
         ];
         

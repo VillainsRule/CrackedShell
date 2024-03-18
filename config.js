@@ -12,6 +12,7 @@ export default {
 
     server: {
         url: 'risenegg.com',
-        secure: true
+        secure: true,
+        custom: false
     }
 };
