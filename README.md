@@ -64,6 +64,19 @@ For official servers, set this to `true`. For locally hosted servers, set it to 
 This is a boolean that helps you make connect custom servers.<br>
 Keep this as `false` unless instructed to by the server provider.
 
+
+<br>
+<h2 align="center">Replacements</h2>
+
+If you are the host of a CrackedShell instance, you can force files to be replaced.<br>
+Here's how:
+
+1. Make a folder named `replacements/` in the root CrackedShell folder.
+2. Encode the file name in [Base64](https://www.base64encode.org) and then put it in `replacements/`. Do NOT add extensions.
+3. Add the contents to replace into the file!
+
+The server will replace the file when sending server data!
+
 <br>
 <h2 align="center">Developer Information</h2>
 
@@ -118,4 +131,4 @@ Not all information is contained in these docs.<br>
 If you want to learn more, read the codebase - it's a small number of files with simplistic & modern code.
 <br>
 <br>
-<h3 align="center">made with ❤️ by VillainsRule</h3>
+<h3 align="center">made with ❤️ by 1ust</h3>

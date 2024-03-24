@@ -7,7 +7,7 @@ export default {
         'https://gist.githubusercontent.com/',
         'https://pastebin.com/raw/',
         'https://cdn.jsdelivr.net/npm/',
-        'https://cdnjs.cloudflare.com/ajax/libs/',
+        'https://cdnjs.cloudflare.com/ajax/libs/'
     ],
 
     server: {

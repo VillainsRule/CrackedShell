@@ -20,9 +20,8 @@
 
     "imports": {
         "#config": "./config.js",
-        "#cache": "./src/server/cache.js",
-        "#server/*": "./src/server/*.js",
-        "#proxy/*": "./src/server/proxy/*.js",
-        "#modpage/*": "./src/server/modpage/*.js"
+        "#cache": "./src/cache.js",
+        "#proxy/*": "./src/proxy/*.js",
+        "#modpage/*": "./src/modpage/*.js"
     }
 }
