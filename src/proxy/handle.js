@@ -12,9 +12,7 @@ export default (app) => app.get(`/*`, async (req, res) => {
         [['shellshock.js'], 'script'],
 
         [['.png', '.jpg', '.jpeg', '.svg', '.webm', '.ico', '.gif', '.lightmap'], 'buffer'],
-        [['.js', '.json', '.css', '.babylon.manifest', '.babylon'], 'raw'],
-
-        [['/cs-proxy/'], 'crossorigin']
+        [['.js', '.json', '.css', '.babylon.manifest', '.babylon'], 'raw']
     ];
 
     if (fs.existsSync(`./replacements/${Buffer.from(path, 'binary').toString('base64')}`)) {
