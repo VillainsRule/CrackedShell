@@ -13,10 +13,5 @@ export default async (app) => {
         cacheable: config.cacheable
     }));
 
-    await app.get('/mod/active', async (req, res) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.send({ active: true });
-    });
-
     await app.use('/mod', express.static(url.fileURLToPath(new URL('.', import.meta.url)) + './static'));
 };

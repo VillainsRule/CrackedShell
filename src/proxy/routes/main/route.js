@@ -1,36 +1,17 @@
 import axios from 'axios';
+import fs from 'fs';
 import cache from '#cache';
 import config from '#config';
 
-export default async (req, res) => {
+let injection = fs.readFileSync('./src/proxy/routes/main/injection.js', 'utf-8');
+
+export default async (req, res, path) => {
     try {
         let params = new URLSearchParams(req.url.replace('/', ''));
         if (params.size === 0) return res.redirect('/mod');
 
         let scriptTag = ``;
         let styleTags = ``;
-
-        let extraInjects = `
-            let unsafeWindow = window;
-            let GM_deleteValue = (...a) => localStorage.removeItem(...a);
-            let GM_listValues = () => localStorage;
-            let GM_setClipboard = (text, _, callback) => navigator.clipboard.writeText(text).then(() => callback());
-
-            let GM_setValue = (name, value) => {
-                if (typeof value === 'object') localStorage.setItem(name, JSON.stringify(value));
-                else localStorage.setItem(name, value);
-            };
-
-            let GM_getValue = (name) => {
-                try {
-                    return JSON.parse(localStorage.getItem(name));
-                } catch {
-                    localStorage.getItem(name);
-                };
-            };
-
-            let isCrackedShell = true;
-        `;
 
         let cracked = JSON.parse(atob(params.get('cs')));
 
@@ -59,7 +40,7 @@ export default async (req, res) => {
                     preInject += `(() => {${script}})();`;
                 }));
 
-                scriptTag += `;(() => {${extraInjects};${preInject};${raw}})();`;
+                scriptTag += `;(() => {${preInject};${raw}})();`;
             } else styleTags += `<link rel="stylesheet" href="/mod/proxy/${encodeURIComponent(url)}" />`;
 
             return;
@@ -67,11 +48,11 @@ export default async (req, res) => {
 
         let page = await axios.get(`https://math.international/`);
 
-        page.data = page.data.replace(`</script>`, `</script><script>${scriptTag}</script>${styleTags}`);
+        page.data = page.data.replace(`</script>`, `</script><script>(() => {${injection};${scriptTag}})();</script>${styleTags}`);
 
         res.header('Content-Type', page.headers['content-type']);
         res.send(page.data);
     } catch (e) {
-        console.error(e, '/');
+        console.error(e, path);
     };
 };
