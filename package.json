@@ -1,8 +1,6 @@
 {
     "name": "crackedshell",
-    "description": "a cracked copy of shell shockers, used for mod injection.",
     "type": "module",
-    "main": "src/main.js",
 
     "scripts": {
         "start": "node src/main.js",

@@ -8,7 +8,7 @@ let injection = fs.readFileSync('./src/proxy/routes/main/injection.js', 'utf-8')
 export default async (req, res, path) => {
     try {
         let params = new URLSearchParams(req.url.replace('/', ''));
-        if (params.size === 0) return res.redirect('/mod');
+        if (params.size === 0 || !params.get('cs')) return res.redirect('/mod');
 
         let scriptTag = ``;
         let styleTags = ``;

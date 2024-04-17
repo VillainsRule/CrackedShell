@@ -9,9 +9,14 @@ export default async (app) => {
     await proxy(app);
     await download(app);
 
-    await app.get('/mod/data', async (req, res) => res.send({
-        cacheable: config.cacheable
-    }));
+    await app.get('/mod/data', async (req, res) => {
+        res.set('Access-Control-Allow-Origin', '*');
+
+        res.send({
+            success: true,
+            cacheable: config.cacheable
+        });
+    });
 
     await app.use('/mod', express.static(url.fileURLToPath(new URL('.', import.meta.url)) + './static'));
 };
