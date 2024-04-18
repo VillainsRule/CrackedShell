@@ -15,7 +15,7 @@ let GM_getValue = (name) => {
     try {
         return JSON.parse(localStorage.getItem(name));
     } catch {
-        localStorage.getItem(name);
+        return localStorage.getItem(name);
     };
 };
 
