@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async (req, res, path) => {
+export default async (_, res, path) => {
     try {
         if (path === '/js/shellshock.og.js') path = '/js/shellshock.js';
 

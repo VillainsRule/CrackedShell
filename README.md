@@ -60,11 +60,6 @@ If hosting locally, use `localhost:port`.
 This specifies whether or not the server is secure (`wss://` or `ws://`).<br>
 For official servers, set this to `true`. For locally hosted servers, set it to `false`.
 
-#### custom
-This is a boolean that helps you make connect custom servers.<br>
-Keep this as `false` unless instructed to by the server provider.
-
-
 <br>
 <h2 align="center">Replacements</h2>
 

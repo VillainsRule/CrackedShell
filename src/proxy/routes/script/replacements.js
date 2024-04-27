@@ -28,11 +28,6 @@ export default [
         all: true
     },
     {
-        // custom server
-        find: `}.\${`,
-        replace: `}${config.server.custom ? '' : '.'}\${`
-    },
-    {
         // ad blocker
         find: /checkAdBlocker\(\)\{(.*?)\}adBlockerDetected\(\)\{(.*?)\}/,
         replace: `checkAdBlocker(){false}adBlockerDetected(){false}`
