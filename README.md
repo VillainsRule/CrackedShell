@@ -1,19 +1,19 @@
 <div align="center">
     <h1>CrackedShell</h1>
-    <h3>a cracked copy of shell shockers, used for mod injection.</h3>
+    <h3>a cracked copy of shell shockers, with injection.</h3>
     <h5>if you find a bug, <a href="https://github.com/VillainsRule/CrackedShell/issues">open an issue</a> and i'll do my best.</h5>
 </div>
 
 <br>
-<h2 align="center">WTF is this??</h2>
+<h2 align="center">What is this??</h2>
 
-CrackedShell is a modified copy of Shell Shockers that allows you to inject mods into the game.<br>
+CrackedShell is a modified copy of Shell Shockers that allows you to inject scripts & styles into the game.<br>
 This works with a combination of a server-side "proxy" & URL params.
 
 <br>
 <h2 align="center">How can I use this?</h2>
 
-We do not offer any pre-deployed version at this time.<br>
+You can try the demo at [shell.onlypuppy7.online](https://shell.onlypuppy7.online).<br>
 Here's how to set up your own copy:<br>
 <br>
 1. Install Node.JS, NPM, & git.
@@ -23,15 +23,6 @@ Here's how to set up your own copy:<br>
 5. Configure the game in `config.js` (see the Configuration section for more information)
 6. Run the server: `pnpm dev`
 7. Visit the game at `localhost:6900`!
-<br>
-
-**If you want a public instance, try this:**
-1. Install [ngrok](https://ngrok.com/download).
-2. Run `ngrok http {{port here}}` (example: `ngrok http 6900`) in **another terminal**.
-3. Ngrok should input a URL you can visit on any device.
-
-**WARNING: THIS URL CONTAINS YOUR IP ADDRESS.** Be careful who you give this to.
-
 
 <br>
 <h2 align="center">Configuration</h2>
