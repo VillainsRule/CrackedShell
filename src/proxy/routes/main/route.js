@@ -46,7 +46,9 @@ export default async (req, res, path) => {
             return;
         }));
 
-        let page = await axios.get(`https://math.international/`);
+        let page = await axios.get(`https://${config.fileHost}/`, {
+            headers: { Authorization: `Basic ${config.authorization}` }
+        });
 
         page.data = page.data.replace(`</script>`, `</script><script>(() => {${injection};${scriptTag}})();</script>${styleTags}`);
 

@@ -10,8 +10,8 @@ export default {
         'https://cdnjs.cloudflare.com/ajax/libs/'
     ],
 
-    server: {
-        url: 'risenegg.com',
-        secure: true
-    }
+    fileHost: 'risenegg.com',
+    authorization: undefined,
+
+    socketServer: 'risenegg.com'
 };

@@ -6,23 +6,20 @@
 
 <br>
 <h2 align="center">What is this??</h2>
-
-CrackedShell is a modified copy of Shell Shockers that allows you to inject scripts & styles into the game.<br>
-This works with a combination of a server-side "proxy" & URL params.
+<p align="center">CrackedShell is a Shell Shockers "proxy" that allows users to add plugins & themes to the game from the client.</p>
 
 <br>
 <h2 align="center">How can I use this?</h2>
 
-You can try the demo at [shell.onlypuppy7.online](https://shell.onlypuppy7.online).<br>
+You can try a public deployment @ [shell.onlypuppy7.online](https://shell.onlypuppy7.online).<br>
 Here's how to set up your own copy:<br>
 <br>
 1. Install Node.JS, NPM, & git.
 2. Clone the repository from git: `git clone https://github.com/VillainsRule/CrackedShell && cd CrackedShell`
-3. If it is not already on your machine, add PNPM: `npm i -g pnpm`
-4. Install dependencies: `pnpm i`
-5. Configure the game in `config.js` (see the Configuration section for more information)
-6. Run the server: `pnpm dev`
-7. Visit the game at `localhost:6900`!
+3. Install dependencies: `npm i`
+4. Configure the game in `config.js` (see the Configuration section for more information)
+5. Run the server: `npm start`
+6. Visit the game at `localhost:6900`!
 
 <br>
 <h2 align="center">Configuration</h2>
@@ -40,19 +37,22 @@ If you don't care about your privacy, you can add the `*` script to disable this
 
 **Note: the default scripts are ALL trusted raw script sources that will not attack your computer.**
 
-### server
-This allows you to customize the Shell Shockers server host.
+### fileHost
+The file host is the server to fetch the game files from.
 
-#### url
-This specifies the URL of the server. You're best off using an official Shell Shockers instance such as `shellshock.io`.<br>
-If hosting locally, use `localhost:port`.
+### authorization
+This is the authorization key used for accessing the file host. For example, to access the staging server, use a string such as `Buffer.from('STAGING_USERNAME:STAGING_PASSWORD').toString('base64')`. To access the normal game, used `undefined` or `null`.
 
-#### secure
-This specifies whether or not the server is secure (`wss://` or `ws://`).<br>
-For official servers, set this to `true`. For locally hosted servers, set it to `false`.
+#### socketServer
+The socket server the client connects to. WARNING: This can be modified by the client, so it's just the default if the client doesn't use any plugins to override it.
 
 <br>
-<h2 align="center">Replacements</h2>
+<h2 align="center">How??</h2>
+
+So, you might be wondering how we got this together. the answer is a lot of pain, struggling, and debugging. No, literally. This was my first ever project making a proxy to access a site, and it's been very hard. At first, I figured this would work by just proxying everything in the server. No big deal, one file, just add a few bits and parts here and there and the panel to inject the code. No problem! The issue I quickly ran into was the lack of good Node.JS customizable proxy libraries. As a result, I just built a hacky one myself. It uses regexes to determine what kind of file it is and subsequently what "handler" the file should go through. That part is simple enough. I then tried to figure out how to proxy WebSockets, but realized a problem: if the CrackedShell host gets IP banned, nobody can use CrackedShell. As a result, I built a special "handler" for shellshock.js that forced WebSockets to be rerouted to a customizable node of the official game. That way, IP bans were handled on the client and the game would basically be unable to find the CrackedShell host. I then had to actually implement plugins & themes. I built a small page and did some server-side checking to make sure that the main page would redirect to the mod builder if the correct mods weren't found. Plugins & themes are passed to the client with a URL paramemer, cs, which is then read by the server. The server will append a style & script tag at the top with the plugins & themes. After that, I was basically done. I added a caching system for scripts, and later added more features & configuration on request. Enjoy :P
+
+<br>
+<h2 align="center">File Replacements</h2>
 
 If you are the host of a CrackedShell instance, you can force files to be replaced.<br>
 Here's how:
@@ -83,10 +83,10 @@ These values are not exposed to the `window`, so don't worry about being detecte
 ### shellshock.js Server Modification
 In order to fix WebSocket issues, `shellshock.js` is modified on the server. Here's the list of patches:
 ```js
-['||location.host,', '||\'risenegg.com\','], // replace /matchmaker/ socket
-['${location.hostname}', 'risenegg.com'], // replace /services/ socket
-['dynamicContentRoot+', `"risenegg.com"+`], // replace /services/ socket
-['window.location.hostname', '"risenegg.com"'], // replace /game/ socket
+['||location.host,', '||\'{{config.socketServer}}\','], // replace /matchmaker/ socket
+['${location.hostname}', '{{config.socketServer}}'], // replace /services/ socket
+['dynamicContentRoot+', `"{{config.socketServer}}"+`], // replace /services/ socket
+['window.location.hostname', '"{{config.socketServer}}"'], // replace /game/ socket
 ['isHttps()', 'true'] // fix socket http issues
 ```
 
@@ -115,6 +115,7 @@ You can add or remove these in the config.
 ### More Information
 Not all information is contained in these docs.<br>
 If you want to learn more, read the codebase - it's a small number of files with simplistic & modern code.
+
 <br>
 <br>
 <h3 align="center">made with ❤️ by 1ust</h3>

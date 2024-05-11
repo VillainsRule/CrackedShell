@@ -1,9 +1,12 @@
 import axios from 'axios';
+import config from '#config';
 import replacements from './replacements.js';
 
 export default async (_, res) => {
     try {
-        let request = await axios.get(`https://math.international/js/shellshock.js`);
+        let request = await axios.get(`https://${config.fileHost}/js/shellshock.js`, {
+            headers: { Authorization: `Basic ${config.authorization}` }
+        });
 
         replacements.forEach((replacement) => {
             if (!replacement.condition?.() && !!replacement.condition) return;

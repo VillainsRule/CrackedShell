@@ -4,27 +4,27 @@ export default [
     {
         // matchmaker ws
         find: '||location.host,',
-        replace: `||'${config.server.url}',`
+        replace: `||'${config.socketServer}',`
     },
     {
         // services ws
         find: '${location.hostname}',
-        replace: config.server.url
+        replace: config.socketServer
     },
     {
         // services ws
         find: 'dynamicContentRoot+',
-        replace: `"${config.server.url}"+`
+        replace: `"${config.socketServer}"+`
     },
     {
         // game ws
         find: 'window.location.hostname',
-        replace: `"${config.server.url}"`
+        replace: `"${config.socketServer}"`
     },
     {
         // https fixer
         find: 'isHttps()',
-        replace: !!config.server.secure ? 'true' : 'false',
+        replace: 'true',
         all: true
     },
     {
