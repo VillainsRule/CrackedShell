@@ -44,8 +44,6 @@ export default async ({ url }) => {
 
         const raw = await fetch(source).then((raw) => raw.text());
 
-        const meta = raw.match(/\$META\$(.*?)\$EMETA\$/s);
-        if (!meta) return script += `;(() => {${raw}\n})();`;
 
         const regex = /\/\/\s(@\w+)\s+([^\n]+)/g;
         let lastIndex = 0; //because either bun or typescript (i love incompatiblities with drop-in replacements)
@@ -63,20 +61,26 @@ export default async ({ url }) => {
             }
         }
 
-        if ((!meta) || !(metadata && metadata["@require"])) return script += `;(() => {${raw}\n})();`;
+        const meta = raw.match(/\$META\$(.*?)\$EMETA\$/s);
+        if ((!meta) && !(metadata && metadata["@require"])) return script += `;(() => {${raw}\n})();`;
 
         let dependencies = '';
-        let deps = metadata["@require"] || meta[1].split('\n').filter((s: string) => s.includes('&import')).map((s: string) => s.match(/"(.*?)"/));
+        let deps = meta ? meta[1].split('\n').filter((s: string) => s.includes('&import')).map((s: string) => s.match(/"(.*?)"/)) : metadata["@require"];
+        console.log(deps);
 
+//metadata["@require"] || 
         for (let i = 0; i < deps.length; i++) {
-            let dep = deps[i];
-            if (!dep || !dep[1]) continue;
+            let dep = typeof(deps[i]) == 'object' ? deps[i][1] : deps[i];
+            console.log(dep);
+            if (!dep) continue;
             if (
-                !config.fetchable.some(c => dep[1].startsWith('https://' + c)) &&
+                !config.fetchable.some(c => dep.startsWith('https://' + c)) &&
                 !config.fetchable.includes('*')
             ) continue;
 
-            dependencies += `;(() => {${await fetch(dep[1]).then((dep) => dep.text())}})();`;
+            console.log(true);
+
+            dependencies += `;(() => {${await fetch(dep).then((dep) => dep.text())}})();`;
         };
 
         return script += `;(() => {${dependencies};${raw}\n})();`;
