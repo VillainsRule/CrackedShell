@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://files.offshore.cat/Cm5DtDlG.png" width="70%">
+    <img src="https://i.imgur.com/easCvaS.png" width="70%">
     <h3>is officially now on version II.</h3>
 </div><br>
 
