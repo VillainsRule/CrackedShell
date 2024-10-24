@@ -47,8 +47,6 @@ export default async ({ url }) => {
         const meta = raw.match(/\$META\$(.*?)\$EMETA\$/s);
         if (!meta) return script += `;(() => {${raw}\n})();`;
 
-        console.log("meta");
-
         const regex = /\/\/\s(@\w+)\s+([^\n]+)/g;
         let lastIndex = 0; //because either bun or typescript (i love incompatiblities with drop-in replacements)
         let metadata = {};
