@@ -1,25 +1,13 @@
 {
     "name": "crackedshell",
-    "type": "module",
-
-    "scripts": {
-        "start": "node src/main.js",
-        "dev": "npx nodemon src/main.js"
-    },
-
-    "dependencies": {
-        "axios": "^1.6.7",
-        "express": "^4.18.2"
-    },
-    
+    "main": "src/main.ts",
     "devDependencies": {
-        "nodemon": "^3.1.0"
+        "@types/bun": "^1.1.12",
+        "@types/node": "^22.7.9"
     },
-
-    "imports": {
-        "#config": "./config.js",
-        "#cache": "./src/cache.js",
-        "#proxy/*": "./src/proxy/*.js",
-        "#modpage/*": "./src/modpage/*.js"
-    }
+    "scripts": {
+        "start": "bun src/main.ts",
+        "dev": "bun --watch src/main.ts"
+    },
+    "type": "module"
 }
