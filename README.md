@@ -18,13 +18,16 @@ You can try a demo @ [shell.onlypuppy7.online](https://shell.onlypuppy7.online).
 
 Here's how to set up your own deployment:<br>
 <br>
-1. Install [Bun](https://bun.sh) & [git](https://git-scm.com)
-2. Clone the repository from git: `git clone https://github.com/VillainsRule/CrackedShell && cd CrackedShell`
-3. Configure the game in `config.ts` - information is inside of the file.
-4. Run the server: `npm start`
-5. Visit the game at `localhost:6900`!
+1. Install [Bun](https://bun.sh) & [git](https://git-scm.com).
+2. Clone the repository (`git clone https://github.com/VillainsRule/CrackedShell && cd CrackedShell`).
+3. Install dependencies using bun (`bun i`).
+4. Configure the server in your local config.ts file.
+5. Run the server using bun (`bun .`).
+6. Play CrackedShell at `localhost:6900`!
 
-Node __is not supported__ when using CrackedShell v2. Please ensure you use Bun, or you will get runtime errors.
+> [!WARNING]
+> Node __is not supported__ when using CrackedShell v2.<br>
+> Please ensure you use Bun, or you will experience runtime errors.
 
 ## Developer Documentation
 
