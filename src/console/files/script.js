@@ -10,7 +10,7 @@ term.open(document.querySelector('.console'));
 term.prompt = () => term.write('\r\n$ ');
 
 term.writeln([
-    '     CrackedShell - an Shell Shockers script injector that \x1b[1mworks everywhere\x1b[0m.',
+    '     CrackedShell - a Shell Shockers script injector that \x1b[1mworks everywhere\x1b[0m.',
     '',
     ' ┌ \x1b[1mCommands\x1b[0m ───────────────────────────────────────────────────────────────┐',
     ' │                                                                         │',
