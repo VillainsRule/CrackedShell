@@ -10,7 +10,7 @@ term.open(document.querySelector('.console'));
 term.prompt = () => term.write('\r\n$ ');
 
 term.writeln([
-    '     CrackedShell - an Shell Shockers script injector that \x1b[1mworks everywhere\x1b[0m.',
+    '     CrackedShell - a Shell Shockers script injector that \x1b[1mworks everywhere\x1b[0m.',
     '',
     ' ┌ \x1b[1mCommands\x1b[0m ───────────────────────────────────────────────────────────────┐',
     ' │                                                                         │',
@@ -98,7 +98,7 @@ let commands = {
             '    CrackedShell is made possible by the work of one person.',
             '    If you like the project, please consider power poles.',
             '      Source: \x1b[34;1mhttps://github.com/VillainsRule/CrackedShell\x1b[0m',
-            '      Discord: \x1b[34;1mhttps://discord.gg/mPa95HB7Q6\x1b[0m',
+            '      Discord: \x1b[34;1mhttps://dsc.gg/sfnetwork\x1b[0m',
             '      Bug Report: \x1b[34;1mhttps://github.com/VillainsRule/CrackedShell/issues/new\x1b[0m',
             ''
         ].join('\n\r'));
