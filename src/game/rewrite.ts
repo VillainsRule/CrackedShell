@@ -44,21 +44,20 @@ export default async ({ url }) => {
 
         const raw = await fetch(source).then((raw) => raw.text());
 
-
         const regex = /\/\/\s(@\w+)\s+([^\n]+)/g;
-        let lastIndex = 0; //because either bun or typescript (i love incompatiblities with drop-in replacements)
+        let lastIndex = 0;
         let metadata = {};
         let match;
     
         while ((match = regex.exec(raw)) !== null) {
             const key = match[1];
             const value = match[2].trim();
-            if (!metadata[key]) { metadata[key] = []; };
+
+            if (!metadata[key]) metadata[key] = [];
             metadata[key].push(value);
             lastIndex = regex.lastIndex;
-            if (lastIndex === match.index) {
-                regex.lastIndex++;
-            }
+
+            if (lastIndex === match.index) regex.lastIndex++;
         }
 
         const meta = raw.match(/\$META\$(.*?)\$EMETA\$/s);
@@ -66,19 +65,14 @@ export default async ({ url }) => {
 
         let dependencies = '';
         let deps = meta ? meta[1].split('\n').filter((s: string) => s.includes('&import')).map((s: string) => s.match(/"(.*?)"/)) : metadata["@require"];
-        console.log(deps);
 
-//metadata["@require"] || 
         for (let i = 0; i < deps.length; i++) {
             let dep = typeof(deps[i]) == 'object' ? deps[i][1] : deps[i];
-            console.log(dep);
             if (!dep) continue;
             if (
                 !config.fetchable.some(c => dep.startsWith('https://' + c)) &&
                 !config.fetchable.includes('*')
             ) continue;
-
-            console.log(true);
 
             dependencies += `;(() => {${await fetch(dep).then((dep) => dep.text())}})();`;
         };
