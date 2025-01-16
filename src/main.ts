@@ -26,7 +26,7 @@ Bun.serve({
         '/$/style.css': await build('./console/style.css'),
         '/$/script.js': await build('./console/script.js'),
 
-        '/$/ping': new Response('OK')
+        '/$/ping': new Response('OK', { status: 200 })
     },
 
     fetch: async (request) => {
