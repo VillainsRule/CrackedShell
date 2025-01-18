@@ -1,16 +1,13 @@
 {
     "name": "crackedshell",
+    "type": "module",
     "main": "src/main.ts",
-    "dependencies": {
-        "axios": "^1.7.7"
-    },
-    "devDependencies": {
-        "@types/bun": "^1.1.12",
-        "@types/node": "^22.7.9"
-    },
     "scripts": {
         "start": "bun src/main.ts",
         "dev": "bun --watch src/main.ts"
     },
-    "type": "module"
+    "devDependencies": {
+        "@types/bun": "^1.1.16",
+        "@types/node": "^22.10.7"
+    }
 }

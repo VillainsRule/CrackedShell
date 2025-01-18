@@ -41,7 +41,8 @@ term.writeln([
 
 let command = '';
 let process = false;
-let game = null;
+
+let $INSTANCE = null;
 
 endTask();
 
@@ -56,7 +57,10 @@ term.onData((e) => {
                 term.writeln('');
 
                 if (firstPart in commands) commands[firstPart](command.split(' ').slice(1));
-                else term.writeln(`${firstPart}: command not found`);
+                else {
+                    term.writeln(`${firstPart}: command not found`);
+                    endTask();
+                }
             };
 
             command = '';
@@ -70,9 +74,9 @@ term.onData((e) => {
             break;
 
         default:
-            if (game) {
-                game.close();
-                game = null;
+            if ($INSTANCE) {
+                $INSTANCE.close();
+                $INSTANCE = null;
                 return process = false;
             };
 
@@ -118,16 +122,15 @@ let commands = {
 
         term.writeln('  launching game...');
 
-        game = window.open(`/?payload=${payload}`, '_blank');
+        window.$INSTANCE = window.open(`/?payload=${payload}`, '_blank');
 
-        game.onload = () => {
+        window.$INSTANCE.onload = () => {
             term.writeln('  game loaded. press any key to quit...');
-            game.history.pushState({}, game.document.title, game.location.origin + game.location.pathname);
 
-            game.onbeforeunload = (e) => {
+            window.$INSTANCE.onbeforeunload = (e) => {
                 e.preventDefault();
-                game && game.close();
-                game = null;
+                window.$INSTANCE && window.$INSTANCE.close();
+                window.$INSTANCE = null;
                 process = false;
                 return true;
             }
@@ -196,6 +199,16 @@ let commands = {
         if (!args[0]) return term.writeln('  \x1b[31;1mmissing URL.\x1b[0m usage: uninject [url]');
 
         const url = args[0];
+        if (url === 'all') {
+            localStorage.setItem('js', JSON.stringify([]));
+            localStorage.setItem('css', JSON.stringify([]));
+
+            term.writeln('  \x1b[32;1mremoved all scripts!\x1b[0m');
+            term.writeln('  \x1b[33;1mreload the game to get back to the norm.\x1b[0m');
+    
+            return endTask();
+        }
+
         const type = url.split('.').pop();
         if (type === 'js') {
             let js = JSON.parse(localStorage.getItem('js') || '[]');

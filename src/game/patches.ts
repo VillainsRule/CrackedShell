@@ -9,8 +9,8 @@ const patches = {
         replace: '${$WEBSOCKET}'
     }, {
         // Replace Services Websocket
-        find: '+dynamicContentRoot+',
-        replace: `+$WEBSOCKET+`
+        find: '`${AL}.shellshock.io`',
+        replace: `$WEBSOCKET`
     }, {
         // Replace Game Websocket
         find: '||window.location.hostname',
@@ -18,8 +18,7 @@ const patches = {
     }, {
         // Spoof HTTPS for testing on localhost
         find: 'isHttps()',
-        replace: 'true',
-        global: true
+        replace: 'true'
     }, {
         // Ad Blocker
         find: /checkAdBlocker\(\)\{(.*?)\}adBlockerDetected\(\)\{(.*?)\}/,

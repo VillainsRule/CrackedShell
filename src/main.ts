@@ -10,9 +10,7 @@ const build = async (file: string) => {
     let data = Bun.file(path.join(import.meta.dirname, file));
 
     return new Response(await data.bytes(), {
-        headers: {
-            'Content-Type': data.type
-        }
+        headers: { 'Content-Type': data.type }
     })
 }
 

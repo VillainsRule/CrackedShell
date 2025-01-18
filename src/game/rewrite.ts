@@ -1,6 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import { redirect, send } from '../util/respond';
 
 import config from '../../config';
+
+const core = fs.readFileSync(path.join(import.meta.dirname, '..', 'console', 'core.js'), 'utf-8');
 
 export default async ({ url }) => {
     const getter = await fetch('https://shellshock.io/');
@@ -14,91 +19,92 @@ export default async ({ url }) => {
         instance: string | undefined;
     };
 
-    let rawPayload = url.searchParams.get('payload');
     let payload: Payload;
 
     try {
-        payload = JSON.parse(rawPayload);
+        payload = JSON.parse(url.searchParams.get('payload'));
 
-        typeof payload.js === 'string' && (payload.js = JSON.parse(payload.js));
-        typeof payload.css === 'string' && (payload.css = JSON.parse(payload.css));
-        
-        if (!payload.instance) payload.instance = 'risenegg.com';
+        if (typeof payload.js === 'string') payload.js = ['core', ...JSON.parse(payload.js)];
+        else payload.js = [];
+
+        if (typeof payload.css === 'string') payload.css = [...JSON.parse(payload.css)];
+        else payload.css = [];
+
+        if (typeof payload.instance === 'string') payload.instance = payload.instance;
+        else payload.instance = 'risenegg.com';
     } catch {
         return redirect('/$');
     }
 
     let script = '';
 
-    Array.isArray(payload.js) && await Promise.all(payload.js.map(async (source) => {
-        let allowed: boolean;
+    await Promise.all(payload.js.map(async (source) => {
+        let text = '';
 
-        try {
-            let mappedURL = new URL(source);
-            allowed = config.fetchable.includes('*') || config.fetchable.some(r => mappedURL.host === r);
-        } catch {
-            allowed = false;
-        }
+        if (source != 'core') {
+            try {
+                let allowed = config.fetchable.includes('*') || config.fetchable.some(r => new URL(source).host === r);
+                if (!allowed) return;
 
-        if (!allowed) return;
+                let raw = await fetch(source);
+                if (raw.status >= 400) return;
 
-        const raw = await fetch(source).then((raw) => raw.text());
+                text = await raw.text();
+            } catch { }
+        } else text = core;
 
-        const regex = /\/\/\s(@\w+)\s+([^\n]+)/g;
+        let regex = /\/\/\s(@\w+)\s+([^\n]+)/g;
         let lastIndex = 0;
         let metadata = {};
-        let match;
-    
-        while ((match = regex.exec(raw)) !== null) {
+        let match: RegExpExecArray | null;
+
+        while ((match = regex.exec(text)) !== null) {
             const key = match[1];
             const value = match[2].trim();
 
             if (!metadata[key]) metadata[key] = [];
             metadata[key].push(value);
-            lastIndex = regex.lastIndex;
 
+            lastIndex = regex.lastIndex;
             if (lastIndex === match.index) regex.lastIndex++;
         }
 
-        const meta = raw.match(/\$META\$(.*?)\$EMETA\$/s);
-        if ((!meta) && !(metadata && metadata["@require"])) return script += `;(() => {${raw}\n})();`;
+        if (!metadata || !metadata['@require']) return script += `;(() => {${text}\n})();`;
 
         let dependencies = '';
-        let deps = meta ? meta[1].split('\n').filter((s: string) => s.includes('&import')).map((s: string) => s.match(/"(.*?)"/)) : metadata["@require"];
+        let deps = metadata['@require'];
 
         for (let i = 0; i < deps.length; i++) {
-            let dep = typeof(deps[i]) == 'object' ? deps[i][1] : deps[i];
+            let dep = typeof (deps[i]) == 'object' ? deps[i][1] : deps[i];
             if (!dep) continue;
             if (
                 !config.fetchable.some(c => dep.startsWith('https://' + c)) &&
                 !config.fetchable.includes('*')
             ) continue;
 
-            dependencies += `;(() => {${await fetch(dep).then((dep) => dep.text())}})();`;
+            dependencies += `;(() => {${await fetch(dep).then((dep) => dep.text())}\n})();\n\n`;
         };
 
-        return script += `;(() => {${dependencies};${raw}\n})();`;
+        return script += `;(() => {${dependencies};${text}\n})();\n\n`;
     }));
 
     let html = '';
 
-    Array.isArray(payload.css) && await Promise.all(payload.css.map(async (style) => {
-        let allowed: boolean;
-
+    await Promise.all(payload.css.map(async (style) => {
         try {
-            let mappedURL = new URL(style);
-            allowed = config.fetchable.includes('*') || config.fetchable.some(r => mappedURL.host === r);
-        } catch {
-            allowed = false;
-        };
+            let allowed = config.fetchable.includes('*') || config.fetchable.some(r => new URL(style).host === r);
+            if (!allowed) return;
 
-        if (allowed) html += `<style>${await fetch(style).then((style) => style.text())}</style>`;
+            let raw = await fetch(style);
+            if (raw.status >= 400) return;
+
+            html += `<style>${await raw.text()}</style>`;
+        } catch { }
     }));
 
-    return send(
-        response.replace(`</script>`, `</script>
-            <script>window.$WEBSOCKET=globalThis.$WEBSOCKET=$WEBSOCKET = "${payload.instance}";</script>
-            <script>(() => {${script}\n})();\n</script>${html}`),
-        getter.headers['content-type']
-    );
+    return send(response.replace(`</script>`, `</script>
+        <script>window.$WEBSOCKET=globalThis.$WEBSOCKET=$WEBSOCKET="${payload.instance}";</script>
+        <script>window.$INSTANCE=globalThis.$INSTANCE=$INSTANCE=window.opener.$INSTANCE;</script>
+        <script>(() => {${script.replace(/\$/g, '$$$$')}\n})();\n</script>${html}`),
+        'text/html; charset=UTF-8');
 }

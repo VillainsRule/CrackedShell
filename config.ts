@@ -2,15 +2,18 @@ export default {
     // The port to run CrackedShell on
     port: 6900,
 
-    // This specifies script sources that the server can fetch, which are input by users.
-    // This helps prevent your server from being IP logged with malicious scripts.
-    // If your IP is already exposed or don't need to hide it, add "*" to disable caching.
-    // The default scripts below are all trusted raw sources that do not log IPs.
+    // This specifies user-input script hosts that the server is allowed to fetch.
+    // This helps prevent your server from being "IP logged" with malicious hosts.
+    // If your IP doesn't need to be hidden, add "*" to disable this functionality.
+    // The default hosts entries are script CDNs & sources that are commonly used.
     fetchable: [
-        'raw.githack.com',
         'raw.githubusercontent.com',
         'gist.githubusercontent.com',
+        'cdnjs.cloudflare.com',
         'cdn.jsdelivr.net',
-        'cdnjs.cloudflare.com'
+        'raw.githack.com',
+        'unpkg.com',
+        'localhost',
+        'esm.sh'
     ]
-};
+}

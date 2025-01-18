@@ -21,7 +21,9 @@ body {
     scrollbar-width: none;
 }
 
-.xterm, .xterm-viewport, .xterm-screen {
+.xterm,
+.xterm-viewport,
+.xterm-screen {
     height: 100% !important;
 }
 
