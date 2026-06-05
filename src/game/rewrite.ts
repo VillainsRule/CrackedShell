@@ -1,10 +1,8 @@
-import { redirect, send } from '../util/respond';
-
 import config from '../../config';
 
-export default async ({ url }: { url: URL }) => {
+export default async ({ url }: { url: URL }): Promise<[Buffer | string, string] | [302, string]>  => {
     const getter = await fetch('https://shellshock.io/');
-    if (getter.status !== 200) return redirect('/$');
+    if (getter.status !== 200) return [302, '/$'];
 
     const response = await getter.text();
 
@@ -28,7 +26,7 @@ export default async ({ url }: { url: URL }) => {
         if (typeof payload.instance === 'string') payload.instance = payload.instance;
         else payload.instance = 'risenegg.com';
     } catch {
-        return redirect('/$');
+        return [302, '/$'];
     }
 
     let script = '';
@@ -95,7 +93,7 @@ export default async ({ url }: { url: URL }) => {
         } catch { }
     }));
 
-    return send(`
+    return [`
         <script>window.$INSTANCE=globalThis.$INSTANCE=$INSTANCE=window.opener?.$INSTANCE || localStorage.getItem('instance') || 'risenegg.com';</script>
         <script>(() => {${script.replace(/\$/g, '$$$$')}\n})();\n</script>
         <script>(() => {
@@ -119,5 +117,5 @@ export default async ({ url }: { url: URL }) => {
         })();</script>
         ${html}
         ${response}
-    `, 'text/html; charset=UTF-8');
+    `, 'text/html; charset=UTF-8'];
 }

@@ -17,15 +17,12 @@ You can try a demo @ [shell.onlypuppy7.online](https://shell.onlypuppy7.org).<br
 ## Setting Up CrackedShell
 Here's how to set up your own deployment:
 
-1. Install [Bun](https://bun.sh) & [git](https://git-scm.com).
+1. Install [Bun](https://bun.sh) (node also supported)
 2. Clone the repository (`git clone https://github.com/VillainsRule/CrackedShell && cd CrackedShell`).
-3. Configure the server in your local config.ts file.
-4. Run the server using bun (`bun .`).
-5. Play CrackedShell at `localhost:6900`!
-
-> [!NOTE]
-> You don't need to run `bun i` or install any dependencies, as Bun provides everything out of the box.<br>
-> If you are developing, it might be useful to run this in order to get type annotation in your editor.
+3. Install dependencies: `bun i`
+4. Configure the server in your local config.ts file.
+5. Run the server using bun (`bun .`).
+6. Play CrackedShell at `localhost:6900`!
 
 ## Developer Documentation
 CrackedShell works in a somewhat similar way to Tampermonkey in terms of scripting, and supports many of the GM values and offers alternatives for other ones.

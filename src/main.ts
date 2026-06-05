@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import http from 'node:http';
 import path from 'node:path';
 
 import game from './game/rewrite';
@@ -5,34 +7,44 @@ import files from './game/files';
 
 import config from '../config';
 
-const build = async (file: string) => {
-    let data = Bun.file(path.join(import.meta.dirname, file));
+const staticRoutes = {
+    '/$': [fs.createReadStream(path.join(import.meta.dirname, './console/index.html')), 'text/html'],
+    '/$/': [fs.createReadStream(path.join(import.meta.dirname, './console/index.html')), 'text/html'],
+    '/$/style.css': [fs.createReadStream(path.join(import.meta.dirname, './console/style.css')), 'application/css'],
+    '/$/script.js': [fs.createReadStream(path.join(import.meta.dirname, './console/script.js')), 'application/javascript'],
+    '/$/ping': ['OK', 'text/plain']
+} as { [key: string]: [Buffer | fs.ReadStream | string, string] };
 
-    return new Response(await data.bytes(), { headers: { 'Content-Type': data.type } })
-}
+http.createServer(async (req, res) => {
+    const url = new URL(req.url!, `http://localhost`);
+    const path = decodeURIComponent(url.pathname);
 
-Bun.serve({
-    port: config.port,
-
-    // @ts-expect-error oh?
-    static: {
-        '/$': await build('./console/index.html'),
-        '/$/': await build('./console/index.html'),
-
-        '/$/style.css': await build('./console/style.css'),
-        '/$/script.js': await build('./console/script.js'),
-
-        '/$/ping': new Response('OK', { status: 200 })
-    },
-
-    fetch: async (request) => {
-        const url = new URL(request.url);
-        const path = decodeURIComponent(url.pathname);
-
-        if (path.startsWith('/$')) return new Response();
-        else if (path.startsWith('/?') || path === '/') return await game({ url });
-        else return await files({ path });
+    const staticHandler = path in staticRoutes ? staticRoutes[path] : null;
+    if (staticHandler) {
+        res.writeHead(200, { 'Content-Type': staticHandler[1] });
+        res.end(staticHandler[0]);
+        return;
     }
-});
+
+    if (path.startsWith('/$')) {
+        res.writeHead(200);
+        res.end();
+        return;
+    }
+
+    if (path.startsWith('/?') || path === '/') {
+        const result = await game({ url });
+        if (result[0] === 302) return res.writeHead(302, { Location: result[1] }).end();
+        res.writeHead(200, { 'Content-Type': result[1] });
+        res.end(result[0]);
+        return;
+    }
+
+    const result = await files({ path });
+    if (result[0] === 302) return res.writeHead(302, { Location: result[1] }).end();
+    res.writeHead(200, { 'Content-Type': result[1] });
+    res.end(result[0]);
+    return;
+}).listen(config.port);
 
 console.log('$ cs @ http://localhost:' + config.port);
