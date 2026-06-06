@@ -1,6 +1,10 @@
-<div align="center">
-    <img src="https://i.imgur.com/easCvaS.png" width="70%">
-    <h3>has hit the stars with version II.</h3>
+<p align='center'>crackedshell is legacy software and may not work anymore. <a href='https://github.com/yolkop/shim'>shim</a> is the recommended replacement.</p>
+
+<br><br><hr><br><br>
+
+<div align='center'>
+    <h1>CrackedShell</h1>
+    <h3>put your scripts & themes in shell shockers, anywhere, anytime.</h3>
 </div><br>
 
 ## About
